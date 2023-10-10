@@ -1,0 +1,275 @@
+<html>
+	<head>
+		<title>PhpFuck [(^.+)]</title>
+		<link rel="stylesheet" type="text/css" href="clippy/clippy.css" media="all">
+
+<script src="
+https://cdn.jsdelivr.net/npm/ace-builds@1.29.0/src-min-noconflict/ace.min.js
+"></script>
+<link href="
+https://cdn.jsdelivr.net/npm/ace-builds@1.29.0/css/ace.min.css
+" rel="stylesheet">
+	</head>
+	
+	<body>
+	<style>
+/* Layout */
+html {display: flex; flex-direction: column;} /* IE fix */
+body {
+  display: flex; /* crée un contexte flex pour ses enfants */
+  flex-direction: column; /* affichage vertical */
+  min-height: 100vh; /* toute la hauteur du viewport (compatible IE9+) */
+}
+.wrapper {
+  display: block; /* IE fix */
+  flex: 1 1 auto; /* occupe la hauteur restante */
+  display: flex; /* crée un contexte flex pour ses enfants */
+  flex-direction: row; /* affichage horizontal */
+}
+nav {
+  width: 50%;
+}
+.content {
+  display: block; /* IE fix */
+  flex: 1; /* occupe la largeur restante */
+  min-height: 50px; 
+}
+
+
+/* Responsive */
+
+@media (max-width: 640px) {
+	body {
+  
+}
+	.wrapper {
+    flex-direction: column;
+  }
+	.content {
+		flex-basis: auto;
+	}
+  nav {
+    width: auto;
+    order: 1;
+  }
+}
+
+/* Decoration */
+
+body {
+	margin: 0;
+	background: #fff;
+	font-size: 1.0em;
+}
+header, nav, section, footer {
+	padding: 0;
+	margin: 0;
+
+}
+header {
+ 
+}
+nav {
+}
+nav a {
+  display: block;
+  color: #fff;
+
+}
+section {
+
+}
+footer {
+
+  text-align: center;
+}
+    #editor { 
+        position: relative;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+		width: 100%;
+		height: 100%;
+    }
+	#editor-wrap {
+		width: 100%;
+		height: 100%;
+
+	}
+	#console-wrap {
+		width: 100%;
+		height: 100%;
+	}
+	#output {
+	    width:100%;
+    height:100%;
+    font-size: 12px;
+    font-family: Consolas,"Courier new"
+    float:none;
+    background-color:#171A15;
+    color:#FCF9F3;
+	resize: none;
+	
+	}
+</style>
+		<script>
+			const zero = "([]^[])";
+			const one = "([]^[[]])";
+			const array = "[]";
+			const array_str="[].[]";
+			
+			const number = (n) => {
+				if (n == 0) {
+					return zero;
+				}
+				let value = zero;
+				for (let i = 0; i < n; i++) {
+					value = `${value}+${one}`;
+				}
+				return value;
+			};
+			
+			const map = {};
+			
+			map.A = `(${array_str})[${number(0)}]`;
+			map.r = `(${array_str})[${number(1)}]`;
+			map.a = `(${array_str})[${number(3)}]`;
+			map.y = `(${array_str})[${number(4)}]`;
+			map.c = `(${zero}.${zero}^${number(2)}.${zero}^(${map.a}))`;
+			map.h = `(${number(1)}.${zero}^(${map.A})^(${map.a})^(${map.y}))`;
+			
+			const fromString = s =>s.split('').map(x => {
+			  if (!(x in map)) {
+				const charCode = x.charCodeAt(0);
+				return `(${fromString("chr")})(${number(charCode)})`;
+			  }
+			  return map[x];
+			}).join('.');
+			
+			function escape( str ) {
+				const regexComment =/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/g
+				str.replaceAll(regexComment, "");
+				str = str.trim();
+				str = str.replace(/^(<\?php)/,"");
+				str = str.replace(/^(<\?)/,"");
+				str = str.replace(/(\?>)$/,"");
+				str = str.replaceAll("\n", '');
+				str = str.replaceAll("\r", '');
+				str = str.replaceAll("\t", '');
+				str = str.replaceAll('\\"', '\\\\"');
+				str = str.replaceAll('"', '\\"');
+
+				
+				str = '"' + str + '"';
+				console.log(str);
+				return str;
+			}
+			function encodePHP(code, version8) {
+				if (version8) return `@eval(${fromString(code)});`;
+				
+				
+				code = escape(code);
+				const json_decode_func = `(${fromString("json_decode")})(${fromString('["",')}.${fromString(code)}.${fromString("]")})`;
+				return `<?php\n(${fromString("create_function")})(...${json_decode_func})()\n?>`;
+			}
+		</script>
+
+	
+	
+	
+
+<header>
+    <h2>PhpFuck [(^.+)]</h2> <div><input type="checkbox" id="php8">
+      <label for="php8"> PHP8</label> <button id="encode">Encode</button> Generated <span id="stats">0 chars</span> <button id="copy" type="text">Copy</button> <br>
+	  
+      </div>
+</header>
+<div class="wrapper">
+
+  <section class="content">
+	<div id = "editor-wrap">
+		<div id="editor"></div>
+	</div>
+  </section>
+   <nav id="navigation" role="navigation">
+	<div id = "console-wrap">
+	<textarea id="output"></textarea>
+	</div>
+  </nav>
+</div> <!-- /wrapper -->
+
+<footer>
+<a target="_blank" href="https://github.com/Eleirbag89/phpfuck">Dicover more about Phpfuck on GitHub!</a></footer>
+
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/php");
+</script>
+
+<!-- Add these scripts to  the bottom of the page -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+ <!-- Clippy.js, assuming locally -->
+  <script src="clippy/clippy.js"></script>
+
+<script type="text/javascript">
+
+    
+    const talk_f = function talk() {
+      var talks = [
+        "Did you know ? If you use an UNICODE charachter the code breaks",
+        "Did you know ? You should never use it in production",
+        "Did you know ? You can compile it for PHP 8 or 7",
+        ,
+      ];
+      var index = Math.floor((Math.random()*talks.length));
+      window.agent.speak(talks[index]);
+      window.agent.play("Explain");
+    }
+	$( document ).ready(function() {
+        clippy.load("Clippy", function (agent) {
+      window.agent = agent;
+
+      agent.show();
+      window.agent.play("Greeting");
+      //agent.moveTo(100, 100);
+    
+      setInterval(talk_f, 12000);
+    });
+	});
+
+      </script>
+
+
+<script>
+	
+
+    function encode(){
+      var output = encodePHP(editor.getValue(), document.getElementById("php8").checked);
+      document.getElementById("output").value = output;
+	  document.getElementById("stats").innerHTML = output.length + " chars";
+    }
+
+    document.getElementById("encode").onclick = encode;
+    document.getElementById("php8").onchange = encode;
+
+	function copy() {
+	  let textarea =document.getElementById("output");
+	  textarea.select();
+	  document.execCommand("copy");
+	}
+	editor.setValue("<?php\n\techo \"Hello World\";\n?>");
+    encode();
+	
+	document.getElementById("copy").onclick = copy;
+
+  
+  </script>
+  
+ 
+
+
+	</body>
+
+</html>
