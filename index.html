@@ -165,11 +165,9 @@ footer {
 				console.log(str);
 				return str;
 			}
-			function encodePHP(code, version8) {
-				if (version8) return `@eval(${fromString(code)});`;
-				
-				
+			function encodePHP(code) {
 				code = escape(code);
+				
 				const json_decode_func = `(${fromString("json_decode")})(${fromString('["",')}.${fromString(code)}.${fromString("]")})`;
 				return `<?php\n(${fromString("create_function")})(...${json_decode_func})()\n?>`;
 			}
@@ -180,8 +178,7 @@ footer {
 	
 
 <header>
-    <h2>PhpFuck [(^.+)]</h2> <div><input type="checkbox" id="php8">
-      <label for="php8"> PHP8</label> <button id="encode">Encode</button> Generated <span id="stats">0 chars</span> <button id="copy" type="text">Copy</button> <br>
+    <h2>PhpFuck [(^.+)]</h2> <div><button id="encode">Encode</button> Generated <span id="stats">0 chars</span> <button id="copy" type="text">Copy</button> <br>
 	  
       </div>
 </header>
@@ -246,13 +243,12 @@ footer {
 	
 
     function encode(){
-      var output = encodePHP(editor.getValue(), document.getElementById("php8").checked);
+      var output = encodePHP(editor.getValue());
       document.getElementById("output").value = output;
 	  document.getElementById("stats").innerHTML = output.length + " chars";
     }
 
     document.getElementById("encode").onclick = encode;
-    document.getElementById("php8").onchange = encode;
 
 	function copy() {
 	  let textarea =document.getElementById("output");
